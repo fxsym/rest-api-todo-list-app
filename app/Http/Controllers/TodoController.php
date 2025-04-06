@@ -2,31 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\TodoResource;
 use App\Models\Todo;
 use Illuminate\Http\Request;
+use App\Http\Resources\TodoResource;
+use Illuminate\Support\Facades\Gate;
 
 class TodoController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
         // $users = Todo::with(['user', 'categories'])->get();
         // return $users;
         // return TodoResource::collection(Todo::with(['categories', 'user'])->get());
+        $userId = $request->user()->id;
+
+        $todos = Todo::with(['categories', 'user'])
+                ->where('author_id', $userId)
+                ->get();
+        Gate::authorize('viewAny', Todo::class);
 
         return response()->json([
             'message' => 'Data successfully found',
-            'data' => TodoResource::collection(Todo::with(['categories', 'user'])->get())
+            'data' => TodoResource::collection($todos)
         ], 200);
     }
 
-    public function show($id) {
+    public function show(Request $request) {
         // $users = Todo::with(['user', 'categories'])->findOrFail($id);
         // return $users;
         // return new TodoResource(Todo::with(['categories', 'user'])->findOrFail($id));
+        $title = $request->query('title');
+        $userId = $request->user()->id;
+
+        $todo = Todo::with(['categories', 'user'])
+            ->where('author_id', $userId)
+            ->where('title', 'LIKE', '%' . $title . '%')
+            ->first();
+
+        Gate::authorize('view', $todo);
 
         return response()->json([
             'message' => 'Data successfully found',
-            'data' => new TodoResource(Todo::with(['categories', 'user'])->findOrFail($id))
+            'data' => new TodoResource($todo)
         ], 200);
     }
 
@@ -36,14 +52,13 @@ class TodoController extends Controller
             'description' => 'required',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
-            'author_id' => 'required|exists:users,id',
             'status' => 'nullable|in:Not started,In progress,Completed'
         ]);
 
         $todo = Todo::create([
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'author_id' => $validated['author_id'],
+            'author_id' => $request->user()->id,
             'status' => $validated['status'] ?? 'Not started'
         ]);
 
@@ -69,17 +84,15 @@ class TodoController extends Controller
             'description' => 'required',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
-            'author_id' => 'required|exists:users,id',
             'status' => 'nullable|in:Not started,In progress,Completed'
         ]);
-
         $todo = Todo::findOrFail($id);
+        Gate::authorize('update', $todo);
 
         $data = [
             'title' => $validated['title'] ?? $todo->title,
             'description' => $validated['description'] ?? $todo->description,
-            'author_id' => $validated['author_id'] ?? $todo->author_id,
-            'status' => $validated['status'] ?? 'Not started'
+            'status' => $validated['status'] ?? $todo->status
         ];
 
         $todo->update($data);
@@ -102,6 +115,8 @@ class TodoController extends Controller
 
     public function destroy($id) {
         $todo = Todo::with('categories')->findOrFail($id);
+        Gate::authorize('delete', $todo);
+
         $todo->categories()->detach();
         $todo->delete();
 

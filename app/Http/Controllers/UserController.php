@@ -73,8 +73,8 @@ class UserController extends Controller
             'old_password' => 'nullable',
             'password' => 'nullable'
         ]);
-
         $user = User::findOrFail($id);
+        Gate::authorize('update', $user);
 
         $data = [
             'old_password' => $validated['old_password'] ?? $user->password,

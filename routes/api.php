@@ -7,22 +7,35 @@ use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
+//Create User (User not login)
+Route::post('/user', [UserController::class, 'store']);
+
+//Get data users or user by id (Every user login)
 Route::get('/users', [UserController::class, 'index'])->middleware('auth:sanctum');
 Route::get('/user/{id}', [UserController::class, 'show'])->middleware('auth:sanctum');
-Route::post('/user', [UserController::class, 'store']);
+
+//Change user profile (User have their profile)
 Route::patch('/user/{id}', [UserController::class, 'update'])->middleware('auth:sanctum');
+
+//Change user password (User have their profile)
 Route::patch('/user/changepass/{id}', [UserController::class, 'changePassword'])->middleware('auth:sanctum');
 
 Route::get('/categories', [CategoryController::class, 'index'])->middleware('auth:sanctum');
 
-Route::get('/todos', [TodoController::class, 'index']);
-Route::get('/todo/{id}', [TodoController::class, 'show']);
+//Create new Todo (Every User Login)
 Route::post('/todo', [TodoController::class, 'store'])->middleware('auth:sanctum');
+
+//get todo list based on logged in user (User's Todo)
+Route::get('/todos', [TodoController::class, 'index'])->middleware('auth:sanctum');
+
+//get todo list based on logged in user search by title (User's Todo)
+Route::get('/todo', [TodoController::class, 'show'])->middleware('auth:sanctum');
+
+//Update todo (User have created todo)
 Route::patch('/todo/{id}', [TodoController::class, 'update'])->middleware('auth:sanctum');
+
+//Delete todo (User have deteleted todo)
 Route::delete('/todo/{id}', [TodoController::class, 'destroy'])->middleware('auth:sanctum');
 
 
