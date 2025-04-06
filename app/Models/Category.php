@@ -14,6 +14,6 @@ class Category extends Model
 
     public function todos(): BelongsToMany
     {
-        return $this->belongsToMany(Todo::class, 'category_todo', 'category_id', 'todo_id');
+        return $this->belongsToMany(Todo::class, 'category_todo', 'category_id', 'todo_id')->distinct();
     }
 }

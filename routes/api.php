@@ -10,8 +10,8 @@ use App\Http\Controllers\UserController;
 //     return $request->user();
 // });
 
-Route::get('/user', [UserController::class, 'getUser']);
-Route::get('/category', [CategoryController::class, 'getCategory']);
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/categories', [CategoryController::class, 'index']);
 
 
 Route::get('/todos', [TodoController::class, 'index']);

@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TodoResource;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 
 class TodoController extends Controller
 {
     public function index() {
-        $users = Todo::with(['user', 'categories'])->get();
-        return $users;
+        // $users = Todo::with(['user', 'categories'])->get();
+        // return $users;
+        return TodoResource::collection(Todo::with(['categories', 'user'])->get());
     }
 
     public function show($id) {
-        $users = Todo::with(['user', 'categories'])->findOrFail($id);
-        return $users;
+        // $users = Todo::with(['user', 'categories'])->findOrFail($id);
+        // return $users;
+        return new TodoResource(Todo::with(['categories', 'user'])->findOrFail($id));
     }
 
     public function store(Request $request) {
@@ -38,10 +41,11 @@ class TodoController extends Controller
             $todo->categories()->sync($validated['categories']);
         }
 
-        return response()->json([
-            'message' => 'Todo created successfully',
-            'data' => $todo->load(['user' ,'categories'])
-        ], 201);
+        // return response()->json([
+        //     'message' => 'Todo created successfully',
+        //     'data' => $todo->load(['user' ,'categories'])
+        // ], 201);
+        return TodoResource::collection(Todo::with(['categories', 'user'])->get());
     }
 
     public function update($id, Request $request) {
