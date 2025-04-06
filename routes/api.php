@@ -12,17 +12,21 @@ use App\Http\Controllers\CategoryController;
 // });
 
 Route::get('/users', [UserController::class, 'index']);
+Route::get('/user/{id}', [UserController::class, 'show']);
+Route::post('/user', [UserController::class, 'store']);
 Route::patch('/user/{id}', [UserController::class, 'update']);
+
 
 
 Route::get('/categories', [CategoryController::class, 'index']);
 
 
-Route::get('/todos', [TodoController::class, 'index']);
+Route::get('/todos', [TodoController::class, 'index']); 
 Route::get('/todo/{id}', [TodoController::class, 'show']);
 Route::post('/todo', [TodoController::class, 'store'])->middleware('auth:sanctum');
 Route::patch('/todo/{id}', [TodoController::class, 'update'])->middleware('auth:sanctum');
 Route::delete('/todo/{id}', [TodoController::class, 'destroy'])->middleware('auth:sanctum');
+
 
 Route::prefix('auth')->group(function() {
     Route::post('/login', [AuthController::class, 'login']);
