@@ -19,13 +19,13 @@ class UserSeeder extends Seeder
                 'name' => 'Fatih',
                 'username' => 'fxsym',
                 'email' => 'fatih@mail.com',
-                'password' => encrypt('fxsym'),
+                'password' => Hash::make('fxsym'),
             ],
             [
                 'name' => 'Oca',
                 'username' => 'meilika',
                 'email' => 'oca@mail.com',
-                'password' => encrypt('meilika'),
+                'password' => Hash::make('meilika'),
             ],
             [
                 'name' => 'Budi',

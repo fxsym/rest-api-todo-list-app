@@ -11,6 +11,6 @@ class CategoryController extends Controller
     public function index() {
         // $category = Category::with(['todos'])->get();
         // return $category;
-        return CategoryResource::collection(Category::with(['todos.user', 'todos'])->get());
+        return CategoryResource::collection(Category::with(['todos.user'])->get());
     }
 }

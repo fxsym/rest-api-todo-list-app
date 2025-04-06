@@ -11,13 +11,23 @@ class TodoController extends Controller
     public function index() {
         // $users = Todo::with(['user', 'categories'])->get();
         // return $users;
-        return TodoResource::collection(Todo::with(['categories', 'user'])->get());
+        // return TodoResource::collection(Todo::with(['categories', 'user'])->get());
+
+        return response()->json([
+            'message' => 'Data successfully found',
+            'data' => TodoResource::collection(Todo::with(['categories', 'user'])->get())
+        ], 200);
     }
 
     public function show($id) {
         // $users = Todo::with(['user', 'categories'])->findOrFail($id);
         // return $users;
-        return new TodoResource(Todo::with(['categories', 'user'])->findOrFail($id));
+        // return new TodoResource(Todo::with(['categories', 'user'])->findOrFail($id));
+
+        return response()->json([
+            'message' => 'Data successfully found',
+            'data' => new TodoResource(Todo::with(['categories', 'user'])->findOrFail($id))
+        ], 200);
     }
 
     public function store(Request $request) {
@@ -45,7 +55,12 @@ class TodoController extends Controller
         //     'message' => 'Todo created successfully',
         //     'data' => $todo->load(['user' ,'categories'])
         // ], 201);
-        return TodoResource::collection(Todo::with(['categories', 'user'])->get());
+        // return new TodoResource(Todo::with(['categories', 'user'])->findOrFail($todo->id));
+
+        return response()->json([
+            'message' => 'Data added successfully',
+            'data' => new TodoResource(Todo::with(['categories', 'user'])->findOrFail($todo->id))
+        ], 201);
     }
 
     public function update($id, Request $request) {
@@ -73,10 +88,16 @@ class TodoController extends Controller
             $todo->categories()->sync($validated['categories']);
         }
 
+        // return response()->json([
+        //     'message' => 'Todo created successfully',
+        //     'data' => $todo->load(['user' ,'categories'])
+        // ]);
+        // return new TodoResource(Todo::with(['categories', 'user'])->findOrFail($todo->id));
+
         return response()->json([
-            'message' => 'Todo created successfully',
-            'data' => $todo->load(['user' ,'categories'])
-        ]);
+            'message' => 'Data updated successfully',
+            'data' => new TodoResource(Todo::with(['categories', 'user'])->findOrFail($todo->id))
+        ], 200);
     }
 
     public function destroy($id) {
@@ -84,8 +105,13 @@ class TodoController extends Controller
         $todo->categories()->detach();
         $todo->delete();
 
+        // return response()->json([
+        //     'message' => 'Todo deleted successfully',
+        // ]);
+        // return new TodoResource(Todo::with(['categories', 'user'])->findOrFail($todo->id));
+
         return response()->json([
-            'message' => 'Todo deleted successfully',
-        ]);
+            'message' => 'Data dleted successfully'
+        ], 200);
     }
 }
