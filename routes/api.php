@@ -14,4 +14,5 @@ Route::get('/user', [UserController::class, 'getUser']);
 Route::get('/category', [CategoryController::class, 'getCategory']);
 Route::get('/todo', [TodoController::class, 'getTodo']);
 
-Route::post('/todo', [UserController::class, 'store']);
+Route::post('/todo', [TodoController::class, 'store']);
+Route::delete('/todo/{id}', [TodoController::class, 'destroy']);

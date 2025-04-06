@@ -8,11 +8,39 @@ use Illuminate\Http\Request;
 class TodoController extends Controller
 {
     public function store(Request $request) {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required',
             'description' => 'required',
-            'author_id' => 'required',
-            'status' => 'required|in:Not started , In progress,Completed'
+            'categories' => 'required|array',
+            'categories.*' => 'exists:categories,id',
+            'author_id' => 'required|exists:users,id',
+            'status' => 'nullable|in:Not started,In progress,Completed'
+        ]);
+
+        $todo = Todo::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'author_id' => $validated['author_id'],
+            'status' => $validated['status'] ?? 'Not started'
+        ]);
+
+        if (isset($validated['categories'])) {
+            $todo->categories()->sync($validated['categories']);
+        }
+
+        return response()->json([
+            'message' => 'Todo created successfully',
+            'data' => $todo->load(['user' ,'categories'])
+        ], 201);
+    }
+
+    public function destroy($id) {
+        $todo = Todo::with('categories')->findOrFail($id);
+        $todo->categories()->detach();
+        $todo->delete();
+
+        return response()->json([
+            'message' => 'Todo deleted successfully',
         ]);
     }
 
