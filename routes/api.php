@@ -12,7 +12,10 @@ use App\Http\Controllers\UserController;
 
 Route::get('/user', [UserController::class, 'getUser']);
 Route::get('/category', [CategoryController::class, 'getCategory']);
-Route::get('/todo', [TodoController::class, 'getTodo']);
 
+
+Route::get('/todos', [TodoController::class, 'index']);
+Route::get('/todo/{id}', [TodoController::class, 'show']);
 Route::post('/todo', [TodoController::class, 'store']);
+Route::patch('/todo/{id}', [TodoController::class, 'update']);
 Route::delete('/todo/{id}', [TodoController::class, 'destroy']);
