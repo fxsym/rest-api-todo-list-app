@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -44,20 +46,38 @@ class UserController extends Controller
 
     public function update($id, Request $request) {
         $validated = $request->validate([
-            'name' => 'required',
-            'username' => 'required',
-            'email' => 'required|email',
-            'old_password' => 'required',
-            'password' => 'required'
+            'name' => 'nullable',
+            'username' => 'nullable',
+            'email' => 'nullable|email'
+        ]);
+        $user = User::findOrFail($id);
+        Gate::authorize('update', $user);
+
+
+        $data = [
+            'name' => $validated['name'] ?? $user->name,
+            'username' => $validated['username'] ?? $user->username,
+            'email' => $validated['email'] ?? $user->email
+        ];
+
+        $user->update($data);
+
+        return response()->json([
+            'message' => 'Data updated successfully',
+            'data' => new UserResource(User::findOrFail($user->id))
+        ], 200);
+    }
+
+    public function changePassword($id, Request $request) {
+        $validated = $request->validate([
+            'old_password' => 'nullable',
+            'password' => 'nullable'
         ]);
 
         $user = User::findOrFail($id);
 
         $data = [
-            'name' => $validated['name'] ?? $user->name,
-            'username' => $validated['username'] ?? $user->username,
-            'email' => $validated['email'] ?? $user->email,
-            'old_password' => $validated['old_password'],
+            'old_password' => $validated['old_password'] ?? $user->password,
             'password' => Hash::make($validated['password']) ?? $user->password
         ];
 

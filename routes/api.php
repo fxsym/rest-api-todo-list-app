@@ -11,17 +11,15 @@ use App\Http\Controllers\CategoryController;
 //     return $request->user();
 // });
 
-Route::get('/users', [UserController::class, 'index']);
-Route::get('/user/{id}', [UserController::class, 'show']);
+Route::get('/users', [UserController::class, 'index'])->middleware('auth:sanctum');
+Route::get('/user/{id}', [UserController::class, 'show'])->middleware('auth:sanctum');
 Route::post('/user', [UserController::class, 'store']);
-Route::patch('/user/{id}', [UserController::class, 'update']);
+Route::patch('/user/{id}', [UserController::class, 'update'])->middleware('auth:sanctum');
+Route::patch('/user/changepass/{id}', [UserController::class, 'changePassword'])->middleware('auth:sanctum');
 
+Route::get('/categories', [CategoryController::class, 'index'])->middleware('auth:sanctum');
 
-
-Route::get('/categories', [CategoryController::class, 'index']);
-
-
-Route::get('/todos', [TodoController::class, 'index']); 
+Route::get('/todos', [TodoController::class, 'index']);
 Route::get('/todo/{id}', [TodoController::class, 'show']);
 Route::post('/todo', [TodoController::class, 'store'])->middleware('auth:sanctum');
 Route::patch('/todo/{id}', [TodoController::class, 'update'])->middleware('auth:sanctum');
