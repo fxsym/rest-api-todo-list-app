@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 
 //Create User (User not login)
 Route::post('/user', [UserController::class, 'store']);
+Route::get('/user', [UserController::class, 'getUser'])->middleware('auth:sanctum');
 
 //Get data users or user by id (Every user login)
 Route::get('/users', [UserController::class, 'index'])->middleware('auth:sanctum');

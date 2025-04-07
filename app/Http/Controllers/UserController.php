@@ -6,6 +6,7 @@ use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -14,6 +15,11 @@ class UserController extends Controller
 {
     public function index() {
         return UserResource::collection(User::with(['todos.categories'])->get());
+    }
+
+    public function getUser() {
+        $user = Auth::user();
+        return $user;
     }
 
     public function show($id) {

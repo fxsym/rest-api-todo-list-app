@@ -13,12 +13,12 @@ class TodoController extends Controller
         // $users = Todo::with(['user', 'categories'])->get();
         // return $users;
         // return TodoResource::collection(Todo::with(['categories', 'user'])->get());
+        Gate::authorize('viewAny', Todo::class);
         $userId = $request->user()->id;
 
         $todos = Todo::with(['categories', 'user'])
                 ->where('author_id', $userId)
                 ->get();
-        Gate::authorize('viewAny', Todo::class);
 
         return response()->json([
             'message' => 'Data successfully found',

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -23,8 +24,14 @@ class AuthController extends Controller
                 'username' => ['The provided credentials are incorrect.'],
             ]);
         }
+
+        $token = $user->createToken($request->device_name)->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login Succesfully',
+            'token' => $token
+        ], 200);
      
-        return $user->createToken($request->device_name)->plainTextToken;
     }
 
     public function logout(Request $request) {
@@ -34,4 +41,22 @@ class AuthController extends Controller
             'message' => 'Logout Succes'
         ]);
     }
+
+    // public function checkTokenIsValid(Request $request)
+    // {
+    //     // Chek user
+    //     if(!$request->user()){
+    //         return false;
+    //     }
+
+    //     $idUser = $request->user()->id();
+
+    //     PersonalAccessToken::where()->value('token')
+
+    //     if(token === $request->token){
+    //         retujrn true
+    //     } else {
+    //         return false
+    //     }
+    // }
 }
