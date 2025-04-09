@@ -15,10 +15,15 @@ class TodoController extends Controller
         $userId = $request->user()->id;
 
         $limit = $request->query('limit');
+        $keyword = $request->query('keyword');
 
         $query = Todo::with(['categories', 'user'])
             ->where('author_id', $userId)
             ->orderBy('created_at', 'desc');
+
+        if ($keyword) {
+            $query->where('title', 'like', '%' . $keyword . '%');
+        }
 
         if ($limit) {
             $query->limit($limit);
@@ -31,6 +36,7 @@ class TodoController extends Controller
             'data' => TodoResource::collection($todos)
         ], 200);
     }
+
 
 
     public function show(Request $request)
