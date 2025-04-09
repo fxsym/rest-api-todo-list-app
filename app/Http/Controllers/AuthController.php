@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -29,7 +30,8 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login Succesfully',
-            'token' => $token
+            'token' => $token,
+            'user' => new UserResource(User::with(['todos.categories'])->findOrFail($user->id))
         ], 200);
      
     }

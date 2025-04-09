@@ -9,16 +9,22 @@ use Illuminate\Support\Facades\Gate;
 
 class TodoController extends Controller
 {
-    public function index(Request $request) {
-        // $users = Todo::with(['user', 'categories'])->get();
-        // return $users;
-        // return TodoResource::collection(Todo::with(['categories', 'user'])->get());
+    public function index(Request $request)
+    {
         Gate::authorize('viewAny', Todo::class);
         $userId = $request->user()->id;
 
-        $todos = Todo::with(['categories', 'user'])
-                ->where('author_id', $userId)
-                ->get();
+        $limit = $request->query('limit');
+
+        $query = Todo::with(['categories', 'user'])
+            ->where('author_id', $userId)
+            ->orderBy('created_at', 'desc');
+
+        if ($limit) {
+            $query->limit($limit);
+        }
+
+        $todos = $query->get();
 
         return response()->json([
             'message' => 'Data successfully found',
@@ -26,7 +32,9 @@ class TodoController extends Controller
         ], 200);
     }
 
-    public function show(Request $request) {
+
+    public function show(Request $request)
+    {
         // $users = Todo::with(['user', 'categories'])->findOrFail($id);
         // return $users;
         // return new TodoResource(Todo::with(['categories', 'user'])->findOrFail($id));
@@ -46,7 +54,8 @@ class TodoController extends Controller
         ], 200);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'title' => 'required',
             'description' => 'required',
@@ -78,7 +87,8 @@ class TodoController extends Controller
         ], 201);
     }
 
-    public function update($id, Request $request) {
+    public function update($id, Request $request)
+    {
         $validated = $request->validate([
             'title' => 'required',
             'description' => 'required',
@@ -113,7 +123,8 @@ class TodoController extends Controller
         ], 200);
     }
 
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $todo = Todo::with('categories')->findOrFail($id);
         Gate::authorize('delete', $todo);
 
