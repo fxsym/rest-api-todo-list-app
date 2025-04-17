@@ -14,6 +14,7 @@ Route::get('/user', [UserController::class, 'getUser'])->middleware('auth:sanctu
 
 //Get data users or user by id (Every user login)
 Route::get('/users', [UserController::class, 'index'])->middleware('auth:sanctum');
+Route::post('/checkUsername', [UserController::class, 'checkUsername']);
 Route::get('/user/{id}', [UserController::class, 'show'])->middleware('auth:sanctum');
 
 //Change user profile (User have their profile)
@@ -25,13 +26,13 @@ Route::patch('/user/changepass/{id}', [UserController::class, 'changePassword'])
 Route::get('/categories', [CategoryController::class, 'index'])->middleware('auth:sanctum');
 
 //Create new Todo (Every User Login)
-Route::post('/todo', [TodoController::class, 'store'])->middleware('auth:sanctum');
+Route::post('/todo/create', [TodoController::class, 'store'])->middleware('auth:sanctum');
 
 //get todo list based on logged in user (User's Todo)
 Route::get('/todos', [TodoController::class, 'index'])->middleware('auth:sanctum');
 
 //get todo list based on logged in user search by title (User's Todo)
-Route::get('/todo', [TodoController::class, 'show'])->middleware('auth:sanctum');
+Route::get('/todo/{id}', [TodoController::class, 'show'])->middleware('auth:sanctum');
 
 //Update todo (User have created todo)
 Route::patch('/todo/{id}', [TodoController::class, 'update'])->middleware('auth:sanctum');

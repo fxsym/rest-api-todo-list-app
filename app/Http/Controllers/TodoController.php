@@ -19,7 +19,7 @@ class TodoController extends Controller
 
         $query = Todo::with(['categories', 'user'])
             ->where('author_id', $userId)
-            ->orderBy('created_at', 'desc');
+            ->orderBy('updated_at', 'desc');
 
         if ($keyword) {
             $query->where('title', 'like', '%' . $keyword . '%');
@@ -39,17 +39,18 @@ class TodoController extends Controller
 
 
 
-    public function show(Request $request)
+    public function show($id, Request $request)
     {
-        // $users = Todo::with(['user', 'categories'])->findOrFail($id);
-        // return $users;
-        // return new TodoResource(Todo::with(['categories', 'user'])->findOrFail($id));
         $title = $request->query('title');
         $userId = $request->user()->id;
+        $todoId = $id;
 
+        // $todo = Todo::with(['categories', 'user'])
+        //     ->where('author_id', $userId)
+        //     ->where('title', 'LIKE', '%' . $title . '%')
+        //     ->first();
         $todo = Todo::with(['categories', 'user'])
-            ->where('author_id', $userId)
-            ->where('title', 'LIKE', '%' . $title . '%')
+            ->where('id', $todoId)
             ->first();
 
         Gate::authorize('view', $todo);

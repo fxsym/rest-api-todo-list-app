@@ -34,7 +34,7 @@ class UserController extends Controller
             'name' => 'required',
             'username' => 'required|unique:users,username',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8'
+            'password' => 'required|string'
         ]);
 
         $user = User::create([
@@ -99,5 +99,14 @@ class UserController extends Controller
             'message' => 'Data updated successfully',
             'data' => new UserResource(User::findOrFail($user->id))
         ], 200);
+    }
+
+    public function checkUsername(Request $request) {
+        $reqUsername = $request->reqUsername;
+        $takenUsername = User::pluck('username')->toArray();
+        
+        return response()->json([
+            'taken' => in_array($reqUsername, $takenUsername)
+        ]);
     }
 }
