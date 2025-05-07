@@ -8,6 +8,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 
 
+Route::get('/test', function (Request $request) {
+    return response()->json([
+        'status' => 'success',
+        'message' => 'API Test Berhasil!'
+    ]);
+});
 //Create User (User not login)
 Route::post('/user', [UserController::class, 'store']);
 Route::get('/user', [UserController::class, 'getUser'])->middleware('auth:sanctum');

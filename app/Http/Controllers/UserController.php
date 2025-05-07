@@ -13,6 +13,10 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    public function getHallo() {
+        $hallo = "Hallo";
+        return $hallo;
+    }
     public function index() {
         return UserResource::collection(User::with(['todos.categories'])->get());
     }
