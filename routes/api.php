@@ -14,6 +14,7 @@ Route::get('/test', function (Request $request) {
         'message' => 'API Test Berhasil!'
     ]);
 });
+
 //Create User (User not login)
 Route::post('/user', [UserController::class, 'store']);
 Route::get('/user', [UserController::class, 'getUser'])->middleware('auth:sanctum');
