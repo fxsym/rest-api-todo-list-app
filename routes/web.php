@@ -9,13 +9,6 @@ use App\Http\Controllers\CategoryController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/user/users', function () {
-    return response()->json(['message' => 'User']);
-});
-
-Route::get('/api/test', function () {
-    return response()->json(['message' => 'Web route API OK']);
-});
 
 Route::get('/check-db', function () {
     try {
