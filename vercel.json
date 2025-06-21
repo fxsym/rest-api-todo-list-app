@@ -46,12 +46,12 @@
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
         "DB_CONNECTION": "pgsql",
-        "DB_HOST": "ep-spring-bonus-a1i64ayk-pooler.ap-southeast-1.aws.neon.tech",
+        "DB_HOST": "ep-bold-sound-a4sn6hgj-pooler.us-east-1.aws.neon.tech",
         "DB_PORT": "5432",
         "DB_DATABASE": "neondb",
         "DB_USERNAME": "neondb_owner",
-        "DB_PASSWORD": "npg_oIT5H7eZLrcR",
-        "DATABASE_URL": "postgres://neondb_owner:npg_oIT5H7eZLrcR@ep-spring-bonus-a1i64ayk-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+        "DB_PASSWORD": "npg_AOxT3Ryt6DKa",
+        "DATABASE_URL": "postgres://neondb_owner:npg_AOxT3Ryt6DKa@ep-bold-sound-a4sn6hgj-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
     },
     "outputDirectory": "public"
 }

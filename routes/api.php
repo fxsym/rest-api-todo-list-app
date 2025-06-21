@@ -6,7 +6,19 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\VerificationController;
 
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware('signed')->name('verification.verify');
+
+Route::post('/email/resend', [VerificationController::class, 'resend'])
+    ->middleware(['auth:sanctum']);
+
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+});
 
 Route::get('/test', function (Request $request) {
     return response()->json([
@@ -15,40 +27,22 @@ Route::get('/test', function (Request $request) {
     ]);
 });
 
-//Create User (User not login)
-Route::post('/user', [UserController::class, 'store']);
-Route::get('/user', [UserController::class, 'getUser'])->middleware('auth:sanctum');
-
 //Get data users or user by id (Every user login)
-Route::get('/users', [UserController::class, 'index'])->middleware('auth:sanctum');
 Route::post('/checkUsername', [UserController::class, 'checkUsername']);
-Route::get('/user/{id}', [UserController::class, 'show'])->middleware('auth:sanctum');
 
-//Change user profile (User have their profile)
-Route::patch('/user/{id}', [UserController::class, 'update'])->middleware('auth:sanctum');
+Route::middleware('auth:sanctum', 'verified')->group(function () {
+    Route::get('/user', [UserController::class, 'getUser']);
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/user/{id}', [UserController::class, 'show']);
+    Route::patch('/user/{id}', [UserController::class, 'update']);
+    Route::patch('/user/changepass/{id}', [UserController::class, 'changePassword']);
+    Route::get('/categories', [CategoryController::class, 'index']);
 
-//Change user password (User have their profile)
-Route::patch('/user/changepass/{id}', [UserController::class, 'changePassword'])->middleware('auth:sanctum');
-
-Route::get('/categories', [CategoryController::class, 'index'])->middleware('auth:sanctum');
-
-//Create new Todo (Every User Login)
-Route::post('/todo/create', [TodoController::class, 'store'])->middleware('auth:sanctum');
-
-//get todo list based on logged in user (User's Todo)
-Route::get('/todos', [TodoController::class, 'index'])->middleware('auth:sanctum');
-
-//get todo list based on logged in user search by title (User's Todo)
-Route::get('/todo/{id}', [TodoController::class, 'show'])->middleware('auth:sanctum');
-
-//Update todo (User have created todo)
-Route::patch('/todo/{id}', [TodoController::class, 'update'])->middleware('auth:sanctum');
-
-//Delete todo (User have deteleted todo)
-Route::delete('/todo/{id}', [TodoController::class, 'destroy'])->middleware('auth:sanctum');
-
-
-Route::prefix('auth')->group(function() {
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::get('/todos', [TodoController::class, 'index']);
+    Route::prefix('todo')->group(function () {
+        Route::post('create', [TodoController::class, 'store']);
+        Route::get('{id}', [TodoController::class, 'show']);
+        Route::patch('{id}', [TodoController::class, 'update']);
+        Route::delete('{id}', [TodoController::class, 'destroy']);
+    });
 });

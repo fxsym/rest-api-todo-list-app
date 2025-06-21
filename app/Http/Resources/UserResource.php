@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'username' => $this->username,
             'email' => $this->email,
+            'email_verified_at' => $this->email_verified_at,
             'todo_post' => TodoResource::collection($this->whenLoaded('todos')),
         ];
     }
